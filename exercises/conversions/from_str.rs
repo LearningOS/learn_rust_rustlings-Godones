@@ -1,3 +1,4 @@
+use std::f32::consts::E;
 // from_str.rs
 // This is similar to from_into.rs, but this time we'll implement `FromStr`
 // and return errors instead of falling back to a default value.
@@ -26,7 +27,7 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
+
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -41,6 +42,28 @@ enum ParsePersonError {
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        if s.len()==0 {
+            return Err(ParsePersonError::Empty);
+        }else{
+            let s = s.split(',').collect::<Vec<&str>>();
+            if s.len()!=2 {
+                return  Err(ParsePersonError::BadLen);
+            }else {
+                let name = s[0];
+                if  name.is_empty(){
+                    return Err(ParsePersonError::NoName);
+                }else {
+                    let age = s[1];
+                    match  age.parse::<usize>() {
+                        Ok(age) => return Ok(Person{name:name.to_string(),age}),
+                        Err(e) => return Err(ParsePersonError::ParseInt(e))
+                    }
+
+                }
+            }
+
+        }
+
     }
 }
 
